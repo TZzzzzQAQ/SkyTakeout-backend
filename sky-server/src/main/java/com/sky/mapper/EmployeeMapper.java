@@ -35,5 +35,23 @@ public interface EmployeeMapper {
             "#{updateTime},#{createUser},#{updateUser},#{status});")
     void saveEmployee(Employee employee);
 
+    /**
+     * 用于访问数据库中所有的员工信息，使用动态sql语句
+     *
+     * @param employeePageQueryDTO
+     * @return com.github.pagehelper.Page<com.sky.entity.Employee>
+     * @author TZzzQAQ
+     * @create 2023/12/7
+     **/
     Page<Employee> getAllEmployee(EmployeePageQueryDTO employeePageQueryDTO);
+
+    /**
+     * 使用动态sql语句进行修改数据库中的信息，update语句为所有字段动态判断是否需要修改
+     *
+     * @param id
+     * @return void
+     * @author TZzzQAQ
+     * @create 2023/12/7
+     **/
+    void update(Employee.EmployeeBuilder id);
 }

@@ -13,6 +13,7 @@ import com.sky.utils.JwtUtil;
 import com.sky.vo.EmployeeLoginVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -106,8 +107,26 @@ public class EmployeeController {
     @GetMapping("/page")
     @ApiOperation("员工分页查询数据")
     public Result<PageResult> getAllEmployee(EmployeePageQueryDTO employeePageQueryDTO) {
-        log.info("客户端发起分页查询员工所有信息{}",employeePageQueryDTO);
+        log.info("客户端发起分页查询员工所有信息{}", employeePageQueryDTO);
         PageResult pageResult = employeeService.getAllEmployee(employeePageQueryDTO);
         return Result.success(pageResult);
+    }
+
+    /**
+     * 修改员工状态，启用或者禁用
+     *
+     * @param status
+     * @param id
+     * @return com.sky.result.Result
+     * @author TZzzQAQ
+     * @create 2023/12/7
+     **/
+
+    @PostMapping("/status/{status}")
+    @ApiOperation("启用、禁用员工账号")
+    public Result changeEmployeeStatus(@PathVariable Integer status, Long id) {
+        log.info("修改{}员工状态信息{}", id, status);
+        employeeService.changeEmployeeStatus(status, id);
+        return Result.success();
     }
 }

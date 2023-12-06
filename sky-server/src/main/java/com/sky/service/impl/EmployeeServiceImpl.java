@@ -30,7 +30,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeMapper employeeMapper;
 
     /**
-     * This function is used for login.
+     * 登录员工
      *
      * @param employeeLoginDTO
      * @return
@@ -72,7 +72,6 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @author TZzzQAQ
      * @create 2023/12/5
      **/
-
     @Override
     public void save(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
@@ -91,12 +90,37 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeMapper.saveEmployee(employee);
     }
 
+    /**
+     * 分页查询所有员工信息
+     *
+     * @param employeePageQueryDTO
+     * @return com.sky.result.PageResult
+     * @author TZzzQAQ
+     * @create 2023/12/7
+     **/
     @Override
     public PageResult getAllEmployee(EmployeePageQueryDTO employeePageQueryDTO) {
         PageHelper.startPage(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
 
         Page<Employee> page = employeeMapper.getAllEmployee(employeePageQueryDTO);
         return new PageResult(page.getTotal(), page.getResult());
+    }
+
+    /**
+     * 该函数用于修改员工账号状态，启用或者禁用
+     *
+     * @param status
+     * @param id
+     * @return void
+     * @author TZzzQAQ
+     * @create 2023/12/7
+     **/
+    @Override
+    public void changeEmployeeStatus(Integer status, Long id) {
+        //使用builder服用mybatis的update语句，在动态sql中判断需要修改的信息，复用语句
+        employeeMapper.update(Employee.builder()
+                .status(status)
+                .id(id));
     }
 
 }
