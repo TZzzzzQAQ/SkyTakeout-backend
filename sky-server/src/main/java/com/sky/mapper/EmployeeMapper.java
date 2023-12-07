@@ -53,5 +53,16 @@ public interface EmployeeMapper {
      * @author TZzzQAQ
      * @create 2023/12/7
      **/
-    void update(Employee.EmployeeBuilder id);
+    void update(Employee id);
+
+    /**
+     * 根据id回显员工信息，没有使用动态语句配置
+     *
+ * @param id
+     * @return com.sky.entity.Employee
+     * @author TZzzQAQ
+     * @create 2023/12/7
+     **/
+    @Select("select * from employee where id=#{id};")
+    Employee getEmployeeById(Integer id);
 }

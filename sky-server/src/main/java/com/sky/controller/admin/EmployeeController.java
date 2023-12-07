@@ -103,7 +103,6 @@ public class EmployeeController {
      * @author TZzzQAQ
      * @create 2023/12/7
      **/
-
     @GetMapping("/page")
     @ApiOperation("员工分页查询数据")
     public Result<PageResult> getAllEmployee(EmployeePageQueryDTO employeePageQueryDTO) {
@@ -121,12 +120,43 @@ public class EmployeeController {
      * @author TZzzQAQ
      * @create 2023/12/7
      **/
-
     @PostMapping("/status/{status}")
     @ApiOperation("启用、禁用员工账号")
     public Result changeEmployeeStatus(@PathVariable Integer status, Long id) {
         log.info("修改{}员工状态信息{}", id, status);
         employeeService.changeEmployeeStatus(status, id);
+        return Result.success();
+    }
+
+    /**
+     * 根据员工id回显员工的信息
+     *
+     * @param id
+     * @return com.sky.result.Result<com.sky.entity.Employee>
+     * @author TZzzQAQ
+     * @create 2023/12/7
+     **/
+    @GetMapping("/{id}")
+    @ApiOperation("根据id查询员工")
+    public Result<Employee> getEmployeeById(@PathVariable Integer id) {
+        log.info("客户端正在查询id为：{}的员工", id);
+        Employee employee = employeeService.getEmployeeById(id);
+        return Result.success(employee);
+    }
+
+    /**
+     * 修改员工信息
+     *
+ * @param employeeDTO
+     * @return com.sky.result.Result<com.sky.dto.EmployeeDTO>
+     * @author TZzzQAQ
+     * @create 2023/12/7
+     **/
+    @PutMapping
+    @ApiOperation("编辑员工信息")
+    public Result<EmployeeDTO> changeEmployeeInfo(@RequestBody EmployeeDTO employeeDTO) {
+        log.info("编辑{}号员工的信息", employeeDTO.getId());
+        employeeService.changeEmployeeInfo(employeeDTO);
         return Result.success();
     }
 }

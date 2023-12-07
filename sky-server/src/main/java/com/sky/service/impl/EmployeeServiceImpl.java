@@ -18,6 +18,7 @@ import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -117,10 +118,46 @@ public class EmployeeServiceImpl implements EmployeeService {
      **/
     @Override
     public void changeEmployeeStatus(Integer status, Long id) {
-        //使用builder服用mybatis的update语句，在动态sql中判断需要修改的信息，复用语句
-        employeeMapper.update(Employee.builder()
+        Employee employee = Employee.builder()
                 .status(status)
-                .id(id));
+                .id(id).build();
+        //使用builder服用mybatis的update语句，在动态sql中判断需要修改的信息，复用语句
+        employeeMapper.update(employee);
+    }
+
+    /**
+     * 实现接口，根据id回显员工信息
+     *
+     * @param id
+     * @return com.sky.entity.Employee
+     * @author TZzzQAQ
+     * @create 2023/12/7
+     **/
+    @Override
+    public Employee getEmployeeById(Integer id) {
+        Employee employee = employeeMapper.getEmployeeById(id);
+        employee.setPassword("******");
+        return employee;
+    }
+
+    /**
+     * 修改员工信息
+     *
+     * @param employeeDTO
+     * @return void
+     * @author TZzzQAQ
+     * @create 2023/12/7
+     **/
+    @Override
+    public void changeEmployeeInfo(EmployeeDTO employeeDTO) {
+        //使用对象拷贝将dto的数据传入employee中
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);
+        //补充信息
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+
+        employeeMapper.update(employee);
     }
 
 }
