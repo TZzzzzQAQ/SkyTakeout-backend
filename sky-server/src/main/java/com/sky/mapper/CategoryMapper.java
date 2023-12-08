@@ -1,8 +1,11 @@
 package com.sky.mapper;
 
 import com.github.pagehelper.Page;
+import com.sky.dto.CategoryDTO;
 import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -27,4 +30,27 @@ public interface CategoryMapper {
      * @create 2023/12/8
      **/
     void update(Category category);
+
+    /**
+     * mapper层实现删除功能
+     *
+     * @param id
+     * @return void
+     * @author TZzzQAQ
+     * @create 2023/12/8
+     **/
+    @Delete("delete from category where id = #{id};")
+    void deleteCategoryById(Long id);
+
+    /**
+     * 插入菜品，未使用动态sql语句
+     *
+     * @param category
+     * @return void
+     * @author TZzzQAQ
+     * @create 2023/12/8
+     **/
+    @Insert("insert into category (type, name, sort, status, create_time, update_time, create_user, update_user) " +
+            "values (#{type},#{name},#{sort},#{status},#{createTime},#{updateTime},#{createUser},#{updateUser});")
+    void insertCategory(Category category);
 }

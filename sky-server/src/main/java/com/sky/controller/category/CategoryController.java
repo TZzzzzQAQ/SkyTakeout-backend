@@ -1,5 +1,6 @@
 package com.sky.controller.category;
 
+import com.sky.dto.CategoryDTO;
 import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
@@ -48,6 +49,54 @@ public class CategoryController {
     public Result changeCategoryStatus(@PathVariable Integer status, Long id) {
         log.info("修改{}分类的状态", id);
         categoryService.changeCategoryStatus(status, id);
+        return Result.success();
+    }
+
+    /**
+     * 修改菜品分类的信息，不包括状态
+     *
+     * @param categoryDTO
+     * @return com.sky.result.Result<java.lang.String>
+     * @author TZzzQAQ
+     * @create 2023/12/8
+     **/
+    @PutMapping
+    @ApiOperation("修改菜品分类的信息")
+    public Result<String> changeCategoryInfo(@RequestBody CategoryDTO categoryDTO) {
+        log.info("修改菜品分类的信息{}", categoryDTO.getId());
+        categoryService.changeCategoryInfo(categoryDTO);
+        return Result.success();
+    }
+
+    /**
+     * 根据id删除菜品分类
+     *
+     * @param id
+     * @return com.sky.result.Result<java.lang.String>
+     * @author TZzzQAQ
+     * @create 2023/12/8
+     **/
+    @DeleteMapping
+    @ApiOperation("根据id删除分类")
+    public Result<String> deleteCategoryById(Long id) {
+        log.info("根据id删除分类");
+        categoryService.deleteCategoryById(id);
+        return Result.success();
+    }
+
+    /**
+     * 插入菜品信息
+     *
+     * @param categoryDTO
+     * @return com.sky.result.Result<java.lang.String>
+     * @author TZzzQAQ
+     * @create 2023/12/8
+     **/
+    @PostMapping
+    @ApiOperation("新增分类")
+    public Result<String> insertCategory(@RequestBody CategoryDTO categoryDTO) {
+        log.info("新增分类{}", categoryDTO);
+        categoryService.insertCategory(categoryDTO);
         return Result.success();
     }
 }
