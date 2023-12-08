@@ -11,10 +11,20 @@ public interface CategoryMapper {
     /**
      * mapper层本函数使用动态sql语句查询数据
      *
- * @param categoryPageQueryDTO
+     * @param categoryPageQueryDTO
      * @return com.github.pagehelper.Page<com.sky.entity.Category>
      * @author TZzzQAQ
      * @create 2023/12/8
      **/
     Page<Category> getAllCategory(CategoryPageQueryDTO categoryPageQueryDTO);
+
+    /**
+     * mapper层本函数使用动态sql查询数据，使用update动态查询，复用函数
+     *
+     * @param category
+     * @return void
+     * @author TZzzQAQ
+     * @create 2023/12/8
+     **/
+    void update(Category category);
 }

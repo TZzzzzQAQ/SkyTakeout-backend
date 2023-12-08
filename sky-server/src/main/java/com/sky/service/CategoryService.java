@@ -13,4 +13,15 @@ public interface CategoryService {
      * @create 2023/12/8
      **/
     PageResult getAllCategory(CategoryPageQueryDTO categoryPageQueryDTO);
+
+    /**
+     * 修改菜品的状态
+     *
+     * @param status
+     * @param id
+     * @return void
+     * @author TZzzQAQ
+     * @create 2023/12/8
+     **/
+    void changeCategoryStatus(Integer status, Long id);
 }

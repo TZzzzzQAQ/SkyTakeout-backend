@@ -120,7 +120,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void changeEmployeeStatus(Integer status, Long id) {
         Employee employee = Employee.builder()
                 .status(status)
-                .id(id).build();
+                .id(id)
+                .updateTime(LocalDateTime.now())
+                .updateUser(BaseContext.getCurrentId())
+                .build();
         //使用builder服用mybatis的update语句，在动态sql中判断需要修改的信息，复用语句
         employeeMapper.update(employee);
     }
