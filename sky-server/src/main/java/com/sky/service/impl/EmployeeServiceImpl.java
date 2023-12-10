@@ -82,11 +82,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         //配置剩余的属性password,status,createTime,updateTime,createUser,updateUser
         employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
         employee.setStatus(StatusConstant.ENABLE);
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
-        //利用ThreadLocal将封装在BaseContext中的用户id拿到
-        employee.setCreateUser(BaseContext.getCurrentId());
-        employee.setUpdateUser(BaseContext.getCurrentId());
 
         employeeMapper.saveEmployee(employee);
     }
@@ -121,8 +116,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = Employee.builder()
                 .status(status)
                 .id(id)
-                .updateTime(LocalDateTime.now())
-                .updateUser(BaseContext.getCurrentId())
+//                .updateTime(LocalDateTime.now())
+//                .updateUser(BaseContext.getCurrentId())
                 .build();
         //使用builder服用mybatis的update语句，在动态sql中判断需要修改的信息，复用语句
         employeeMapper.update(employee);
@@ -156,9 +151,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         //使用对象拷贝将dto的数据传入employee中
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeDTO, employee);
-        //补充信息
-        employee.setUpdateTime(LocalDateTime.now());
-        employee.setUpdateUser(BaseContext.getCurrentId());
 
         employeeMapper.update(employee);
     }

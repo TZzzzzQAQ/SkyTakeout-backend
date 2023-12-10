@@ -49,8 +49,6 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = Category.builder()
                 .status(status)
                 .id(id)
-                .updateTime(LocalDateTime.now())
-                .updateUser(BaseContext.getCurrentId())
                 .build();
         categoryMapper.update(category);
     }
@@ -67,8 +65,6 @@ public class CategoryServiceImpl implements CategoryService {
     public void changeCategoryInfo(CategoryDTO categoryDTO) {
         Category category = new Category();
         BeanUtils.copyProperties(categoryDTO, category);
-        category.setUpdateTime(LocalDateTime.now());
-        category.setUpdateUser(BaseContext.getCurrentId());
         categoryMapper.update(category);
     }
 
@@ -86,7 +82,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * 实现插入接口，补充update，create信息，status
+     * 实现插入接口，使用Autofull注解自动补充update，create信息，status
      *
      * @param categoryDTO
      * @return void
@@ -98,11 +94,7 @@ public class CategoryServiceImpl implements CategoryService {
     public void insertCategory(CategoryDTO categoryDTO) {
         Category category = new Category();
         BeanUtils.copyProperties(categoryDTO, category);
-        category.setUpdateUser(BaseContext.getCurrentId());
         category.setStatus(0);
-        category.setUpdateTime(LocalDateTime.now());
-        category.setCreateTime(LocalDateTime.now());
-        category.setCreateUser(BaseContext.getCurrentId());
         categoryMapper.insertCategory(category);
     }
 
