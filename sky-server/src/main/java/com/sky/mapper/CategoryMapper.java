@@ -9,6 +9,8 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface CategoryMapper {
     /**
@@ -55,4 +57,7 @@ public interface CategoryMapper {
             "values (#{type},#{name},#{sort},#{status},#{createTime},#{updateTime},#{createUser},#{updateUser});")
     @AutoFill(OperationType.INSERT)
     void insertCategory(Category category);
+
+
+    List<Category> getCategoryByType(Integer type);
 }

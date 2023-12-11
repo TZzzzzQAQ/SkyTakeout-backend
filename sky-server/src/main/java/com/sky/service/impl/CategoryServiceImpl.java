@@ -12,6 +12,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CategoryServiceImpl implements CategoryService {
     @Autowired
@@ -93,6 +95,11 @@ public class CategoryServiceImpl implements CategoryService {
         BeanUtils.copyProperties(categoryDTO, category);
         category.setStatus(0);
         categoryMapper.insertCategory(category);
+    }
+
+    @Override
+    public List<Category> list(Integer type) {
+        return categoryMapper.getCategoryByType(type);
     }
 
 }
