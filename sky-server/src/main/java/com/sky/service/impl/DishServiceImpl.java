@@ -57,6 +57,14 @@ public class DishServiceImpl implements DishService {
         }
     }
 
+    /**
+     * 分页查询所有的菜品
+     *
+     * @param dishPageQueryDTO
+     * @return com.sky.result.PageResult
+     * @author TZzzQAQ
+     * @create 2023/12/12
+     **/
     @Override
     public PageResult getAllDish(DishPageQueryDTO dishPageQueryDTO) {
         PageHelper.startPage(dishPageQueryDTO.getPage(), dishPageQueryDTO.getPageSize());
@@ -64,7 +72,16 @@ public class DishServiceImpl implements DishService {
         return new PageResult(page.getTotal(), page.getResult());
     }
 
+    /**
+     * 删除菜品，业务流程比较复杂需要判断菜品是否停售，是否没有链接任何套餐
+     *
+     * @param ids
+     * @return void
+     * @author TZzzQAQ
+     * @create 2023/12/12
+     **/
     @Override
+    //原子性操作
     @Transactional
     public void deleteDishBatch(List<Long> ids) {
         //判断当前菜品是否能够删除--是否存在启售中的菜品
@@ -72,6 +89,7 @@ public class DishServiceImpl implements DishService {
                 ids) {
             Dish dish = dishMapper.getDishById(id);
             if (dish.getStatus().equals(StatusConstant.ENABLE)) {
+                //一旦存在启售的菜品直接抛出异常，让前端展示信息
                 throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
             }
         }
@@ -83,10 +101,11 @@ public class DishServiceImpl implements DishService {
         //删除菜品表中的菜品
         for (Long id :
                 ids) {
+            //当确定没有问题之后可以直接删除该菜品
             dishMapper.deleteById(id);
+            //删除风味表中的菜品
             dishFlavorMapper.deleteByDishId(id);
         }
-        //删除风味表中的菜品
 
     }
 }

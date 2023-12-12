@@ -26,9 +26,25 @@ public interface DishMapper {
      **/
     Page<DishVO> getAllDish(DishPageQueryDTO dishPageQueryDTO);
 
+    /**
+     * 通过id查询dish的信息
+     *
+     * @param id
+     * @return com.sky.entity.Dish
+     * @author TZzzQAQ
+     * @create 2023/12/12
+     **/
     @Select("select * from dish where id = #{id};")
     Dish getDishById(Long id);
 
+    /**
+     * 通过id删除菜品
+     *
+     * @param id
+     * @return void
+     * @author TZzzQAQ
+     * @create 2023/12/12
+     **/
     @Delete("delete from dish where id = #{id};")
     void deleteById(Long id);
 }
