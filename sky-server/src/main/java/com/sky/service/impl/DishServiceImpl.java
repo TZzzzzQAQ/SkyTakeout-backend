@@ -98,14 +98,50 @@ public class DishServiceImpl implements DishService {
         if (!setIds.isEmpty()) {
             throw new DeletionNotAllowedException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
         }
-        //删除菜品表中的菜品
-        for (Long id :
-                ids) {
-            //当确定没有问题之后可以直接删除该菜品
-            dishMapper.deleteById(id);
-            //删除风味表中的菜品
-            dishFlavorMapper.deleteByDishId(id);
-        }
 
+        //删除菜品表中的菜品
+        dishMapper.deleteByIds(ids);
+        //删除风味表中的菜品
+        dishFlavorMapper.deleteByDishIds(ids);
+    }
+
+    /**
+     * 拿到dish和flavor之后将所有的结果封装在dishvo中
+     *
+     * @param id
+     * @return com.sky.vo.DishVO
+     * @author TZzzQAQ
+     * @create 2023/12/13
+     **/
+    @Override
+    public DishVO getDishById(Long id) {
+        Dish dish = dishMapper.getDishById(id);
+        List<DishFlavor> dishFlavorList = dishFlavorMapper.getFlavorById(id);
+        DishVO dishVO = new DishVO();
+        BeanUtils.copyProperties(dish, dishVO);
+        dishVO.setFlavors(dishFlavorList);
+        return dishVO;
+    }
+
+    /**
+     * 修改菜品信息，普通信息直接使用update修改，flavor信息直接进行覆盖先删除再替换
+     *
+     * @param dishDTO
+     * @return void
+     * @author TZzzQAQ
+     * @create 2023/12/13
+     **/
+    @Override
+    @Transactional
+    public void updateDish(DishDTO dishDTO) {
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(dishDTO, dish);
+        dishMapper.update(dish);
+        dishFlavorMapper.deleteByDishId(dishDTO.getId());
+        List<DishFlavor> flavors = dishDTO.getFlavors();
+        if (flavors != null && !flavors.isEmpty()) {
+            flavors.forEach(dishFlavor -> dishFlavor.setDishId(dishDTO.getId()));
+            dishFlavorMapper.insertBatch(flavors);
+        }
     }
 }
