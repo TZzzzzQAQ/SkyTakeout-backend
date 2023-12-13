@@ -57,4 +57,14 @@ public interface DishService {
      * @create 2023/12/13
      **/
     void updateDish(DishDTO dishDTO);
+
+    /**
+     * 通过分类id获取数据
+     *
+     * @param categoryId
+     * @return java.util.List<com.sky.vo.DishVO>
+     * @author TZzzQAQ
+     * @create 2023/12/13
+     **/
+    List<DishVO> getDishByCategoryId(Long categoryId);
 }

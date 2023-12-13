@@ -70,4 +70,15 @@ public interface DishMapper {
      **/
     @AutoFill(OperationType.UPDATE)
     void update(Dish dish);
+
+    /**
+     * 通过分类id获取数据
+     *
+     * @param categoryId
+     * @return java.util.List<com.sky.vo.DishVO>
+     * @author TZzzQAQ
+     * @create 2023/12/13
+     **/
+    @Select("select * from dish where category_id = #{categoryId};")
+    List<DishVO> getDishByCategoryId(Long categoryId);
 }

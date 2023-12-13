@@ -1,4 +1,4 @@
-package com.sky.controller.category;
+package com.sky.controller;
 
 import com.sky.dto.CategoryDTO;
 import com.sky.dto.CategoryPageQueryDTO;
@@ -103,10 +103,18 @@ public class CategoryController {
         return Result.success();
     }
 
+    /**
+     * 根据类型查询分类
+     *
+     * @param type
+     * @return com.sky.result.Result<java.util.List < com.sky.entity.Category>>
+     * @author TZzzQAQ
+     * @create 2023/12/13
+     **/
     @GetMapping("/list")
     @ApiOperation("根据类型查询分类")
-    public Result<List<Category>> getCategoryByType(Integer type){
-        log.info("根据类型查询分类：{}",type);
+    public Result<List<Category>> getCategoryByType(Integer type) {
+        log.info("根据类型查询分类：{}", type);
         List<Category> list = categoryService.list(type);
         return Result.success(list);
     }

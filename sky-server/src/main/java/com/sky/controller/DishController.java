@@ -1,4 +1,4 @@
-package com.sky.controller.dish;
+package com.sky.controller;
 
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
@@ -32,7 +32,7 @@ public class DishController {
      **/
     @PostMapping
     @ApiOperation("新增菜品")
-    public Result save(@RequestBody DishDTO dishDTO) {
+    public Result<String> save(@RequestBody DishDTO dishDTO) {
         log.info("新增菜品：{}", dishDTO);
         dishService.saveWithFlavor(dishDTO);
         return Result.success();
@@ -99,5 +99,20 @@ public class DishController {
         log.info("修改菜品：{}", dishDTO);
         dishService.updateDish(dishDTO);
         return Result.success();
+    }
+
+    /**
+     * 根据分类id查询数据
+     *
+     * @param categoryId
+     * @return com.sky.result.Result<java.util.List < com.sky.vo.DishVO>>
+     * @author TZzzQAQ
+     * @create 2023/12/13
+     **/
+    @GetMapping("/list")
+    @ApiOperation("根据分类ID查询菜品")
+    public Result<List<DishVO>> getDishByCategoryId(@RequestParam Long categoryId) {
+        log.info("根据分类ID查询菜品：{}", categoryId);
+        return Result.success(dishService.getDishByCategoryId(categoryId));
     }
 }

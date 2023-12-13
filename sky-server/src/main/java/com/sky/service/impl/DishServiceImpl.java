@@ -144,4 +144,17 @@ public class DishServiceImpl implements DishService {
             dishFlavorMapper.insertBatch(flavors);
         }
     }
+
+    /**
+     * 通过分类id获取数据
+     *
+     * @param categoryId
+     * @return java.util.List<com.sky.vo.DishVO>
+     * @author TZzzQAQ
+     * @create 2023/12/13
+     **/
+    @Override
+    public List<DishVO> getDishByCategoryId(Long categoryId) {
+        return dishMapper.getDishByCategoryId(categoryId);
+    }
 }
