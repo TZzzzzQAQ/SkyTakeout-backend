@@ -67,4 +67,6 @@ public interface DishService {
      * @create 2023/12/13
      **/
     List<DishVO> getDishByCategoryId(Long categoryId);
+
+    void changeDishStatus(Integer status, Long id);
 }

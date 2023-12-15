@@ -115,4 +115,11 @@ public class DishController {
         log.info("根据分类ID查询菜品：{}", categoryId);
         return Result.success(dishService.getDishByCategoryId(categoryId));
     }
+
+    @PostMapping("/status/{status}")
+    @ApiOperation("菜品启售和停售")
+    public Result<String> changeDishStatus(@PathVariable Integer status, Long id) {
+        dishService.changeDishStatus(status,id);
+        return Result.success();
+    }
 }
