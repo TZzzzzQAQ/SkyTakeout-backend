@@ -29,7 +29,6 @@ public interface SetMealDishMapper {
      * @author TZzzQAQ
      * @create 2023/12/13
      **/
-    @AutoFill(OperationType.INSERT)
     void insertBatch(List<SetmealDish> setmealDishList);
 
     @Select("select * from setmeal_dish where setmeal_id = #{id};")
