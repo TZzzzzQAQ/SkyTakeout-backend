@@ -155,9 +155,22 @@ public class DishServiceImpl implements DishService {
      **/
     @Override
     public List<DishVO> getDishByCategoryId(Long categoryId) {
-        return dishMapper.getDishByCategoryId(categoryId);
+        Dish dish = Dish.builder()
+                .categoryId(categoryId)
+                .status(StatusConstant.ENABLE)
+                .build();
+        return dishMapper.list(dish);
     }
 
+    /**
+     * 改变菜品的状态
+     *
+     * @param status
+     * @param id
+     * @return void
+     * @author TZzzQAQ
+     * @create 2023/12/16
+     **/
     @Override
     public void changeDishStatus(Integer status, Long id) {
         Dish dish = Dish.builder()

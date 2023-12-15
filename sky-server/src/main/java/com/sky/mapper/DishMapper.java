@@ -81,4 +81,25 @@ public interface DishMapper {
      **/
     @Select("select * from dish where category_id = #{categoryId};")
     List<DishVO> getDishByCategoryId(Long categoryId);
+
+    /**
+     * 获取菜品信息
+     *
+     * @param dish
+     * @return java.util.List<com.sky.vo.DishVO>
+     * @author TZzzQAQ
+     * @create 2023/12/16
+     **/
+    List<DishVO> list(Dish dish);
+
+    /**
+     * 根据套餐id获取该套餐的所有菜品
+     *
+     * @param id
+     * @return java.util.List<com.sky.entity.Dish>
+     * @author TZzzQAQ
+     * @create 2023/12/16
+     **/
+    @Select("select d.* from dish d left join setmeal_dish s on d.id = s.dish_id where s.setmeal_id=#{setMealId};")
+    List<Dish> getDishBySetMealId(Long id);
 }

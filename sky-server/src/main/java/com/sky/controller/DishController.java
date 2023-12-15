@@ -116,10 +116,19 @@ public class DishController {
         return Result.success(dishService.getDishByCategoryId(categoryId));
     }
 
+    /**
+     * 菜品状态修改
+     *
+     * @param status
+     * @param id
+     * @return com.sky.result.Result<java.lang.String>
+     * @author TZzzQAQ
+     * @create 2023/12/16
+     **/
     @PostMapping("/status/{status}")
     @ApiOperation("菜品启售和停售")
     public Result<String> changeDishStatus(@PathVariable Integer status, Long id) {
-        dishService.changeDishStatus(status,id);
+        dishService.changeDishStatus(status, id);
         return Result.success();
     }
 }
