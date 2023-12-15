@@ -5,6 +5,8 @@ import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.result.PageResult;
 import com.sky.vo.SetmealVO;
 
+import java.util.List;
+
 public interface SetMealService {
     /**
      * 分页查看套餐的数据
@@ -36,5 +38,34 @@ public interface SetMealService {
      **/
     SetmealVO getSetMealById(Long id);
 
+    /**
+     * 修改套餐的信息
+     *
+     * @param setmealDTO
+     * @return void
+     * @author TZzzQAQ
+     * @create 2023/12/15
+     **/
     void changeSetMealInfo(SetmealDTO setmealDTO);
+
+    /**
+     * 修改套餐的状态
+     *
+     * @param status
+     * @param id
+     * @return void
+     * @author TZzzQAQ
+     * @create 2023/12/15
+     **/
+    void changeSetMealStatus(Integer status, Long id);
+
+    /**
+     * 删除套餐
+     *
+     * @param ids
+     * @return void
+     * @author TZzzQAQ
+     * @create 2023/12/15
+     **/
+    void delete(List<Long> ids);
 }

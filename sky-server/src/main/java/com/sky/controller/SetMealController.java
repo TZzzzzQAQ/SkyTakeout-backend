@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @Slf4j
 @Api("套餐相关接口")
@@ -68,11 +70,50 @@ public class SetMealController {
         return Result.success(setmealVO);
     }
 
+    /**
+     * 修改套餐信息
+     *
+     * @param setmealDTO
+     * @return
+     */
     @PutMapping
     @ApiOperation("修改套餐")
     public Result<String> changeSetMealInfo(@RequestBody SetmealDTO setmealDTO) {
         log.info("修改套餐内容：{}", setmealDTO);
         setMealService.changeSetMealInfo(setmealDTO);
+        return Result.success();
+    }
+
+    /**
+     * 修改套餐状态
+     *
+     * @param status
+     * @param id
+     * @return com.sky.result.Result<java.lang.String>
+     * @author TZzzQAQ
+     * @create 2023/12/15
+     **/
+    @PostMapping("/status/{status}")
+    @ApiOperation("套餐启售、停售")
+    public Result<String> changeSetMealStatus(@PathVariable Integer status, Long id) {
+        log.info("套餐{}：启售、停售：{}", id, status);
+        setMealService.changeSetMealStatus(status, id);
+        return Result.success();
+    }
+
+    /**
+     * 批量删除套餐
+     *
+     * @param ids
+     * @return com.sky.result.Result<java.lang.String>
+     * @author TZzzQAQ
+     * @create 2023/12/15
+     **/
+    @DeleteMapping
+    @ApiOperation("批量删除套餐")
+    public Result<String> deleteSetMeal(@RequestParam List<Long> ids) {
+        log.info("批量删除套餐：{}", ids);
+        setMealService.delete(ids);
         return Result.success();
     }
 }
