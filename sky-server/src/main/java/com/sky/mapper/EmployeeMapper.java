@@ -62,7 +62,7 @@ public interface EmployeeMapper {
     /**
      * 根据id回显员工信息，没有使用动态语句配置
      *
- * @param id
+     * @param id
      * @return com.sky.entity.Employee
      * @author TZzzQAQ
      * @create 2023/12/7
