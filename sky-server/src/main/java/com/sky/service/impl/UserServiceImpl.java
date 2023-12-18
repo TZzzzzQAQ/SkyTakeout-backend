@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
             //数据库中没有，就注册在自己的数据库中
             userMapper.insert(user);
         }
-        return null;
+        return user;
     }
 
     private String getOpenId(String code) {
