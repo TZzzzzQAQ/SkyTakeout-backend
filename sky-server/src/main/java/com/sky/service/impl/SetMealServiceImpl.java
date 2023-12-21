@@ -138,4 +138,17 @@ public class SetMealServiceImpl implements SetMealService {
             setMealDishMapper.deleteBySetMealId(setMealId);
         });
     }
+
+    /**
+     * 根据分类id获取套餐信息
+     *
+     * @param categoryId
+     * @return java.util.List<com.sky.vo.SetmealVO>
+     * @author TZzzQAQ
+     * @create 2023/12/21
+     **/
+    @Override
+    public List<SetmealVO> getSetMealByCategoryId(Long categoryId) {
+        return setMealMapper.getSetMealByCategoryId(categoryId);
+    }
 }

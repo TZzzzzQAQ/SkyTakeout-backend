@@ -14,6 +14,7 @@ import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetMealDishMapper;
 import com.sky.result.PageResult;
 import com.sky.service.DishService;
+import com.sky.vo.DishItemVO;
 import com.sky.vo.DishVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -179,4 +180,35 @@ public class DishServiceImpl implements DishService {
                 .build();
         dishMapper.update(dish);
     }
+
+    /**
+     * 根据菜品获取菜品详情，风味
+     *
+     * @param dish
+     * @return java.util.List<com.sky.vo.DishVO>
+     * @author TZzzQAQ
+     * @create 2023/12/21
+     **/
+    @Override
+    public List<DishVO> getDishDetailsByDish(Dish dish) {
+        List<DishVO> dishList = dishMapper.getDishByCategoryId(dish.getCategoryId());
+        dishList.forEach(dishVO -> {
+            dishVO.setFlavors(dishFlavorMapper.getFlavorById(dishVO.getId()));
+        });
+        return dishList;
+    }
+
+    /**
+     * 根据套餐id获取菜品
+     *
+     * @param setMealId
+     * @return java.util.List<com.sky.vo.DishItemVO>
+     * @author TZzzQAQ
+     * @create 2023/12/21
+     **/
+    @Override
+    public List<DishItemVO> getDishBySetMealId(Long setMealId) {
+        return setMealDishMapper.getDishItemBySetMealId(setMealId);
+    }
+
 }

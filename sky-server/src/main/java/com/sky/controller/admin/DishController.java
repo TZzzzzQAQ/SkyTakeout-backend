@@ -10,9 +10,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/admin/dish")
@@ -21,6 +23,8 @@ import java.util.List;
 public class DishController {
     @Autowired
     private DishService dishService;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 新增菜品
@@ -35,6 +39,8 @@ public class DishController {
     public Result<String> save(@RequestBody DishDTO dishDTO) {
         log.info("新增菜品：{}", dishDTO);
         dishService.saveWithFlavor(dishDTO);
+        String key = "dish_" + dishDTO.getCategoryId();
+        cleanCache(key);
         return Result.success();
     }
 
@@ -66,6 +72,7 @@ public class DishController {
     public Result<String> deleteDishBatch(@RequestParam List<Long> ids) {
         log.info("进行批量删除菜品，ID为：{}", ids);
         dishService.deleteDishBatch(ids);
+        cleanCache("dish_*");
         return Result.success();
     }
 
@@ -98,6 +105,7 @@ public class DishController {
     public Result<String> updateDish(@RequestBody DishDTO dishDTO) {
         log.info("修改菜品：{}", dishDTO);
         dishService.updateDish(dishDTO);
+        cleanCache("dish_*");
         return Result.success();
     }
 
@@ -129,6 +137,20 @@ public class DishController {
     @ApiOperation("菜品启售和停售")
     public Result<String> changeDishStatus(@PathVariable Integer status, Long id) {
         dishService.changeDishStatus(status, id);
+        cleanCache("dish_*");
         return Result.success();
+    }
+
+    /**
+     * 清理所有的cache
+     *
+     * @param pattern
+     * @return void
+     * @author TZzzQAQ
+     * @create 2023/12/21
+     **/
+    private void cleanCache(String pattern) {
+        Set keys = redisTemplate.keys(pattern);
+        redisTemplate.delete(keys);
     }
 }

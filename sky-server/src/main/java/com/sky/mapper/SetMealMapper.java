@@ -10,6 +10,8 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 @Mapper
 public interface SetMealMapper {
 
@@ -24,12 +26,12 @@ public interface SetMealMapper {
     Page<SetmealVO> getAllSetMeal(SetmealPageQueryDTO setmealPageQueryDTO);
 
     /**
-     * 插入套餐
+     * 插入套餐信息
      *
-     * @param null
-     * @return
+     * @param setmeal
+     * @return void
      * @author TZzzQAQ
-     * @create 2023/12/15
+     * @create 2023/12/21
      **/
     @AutoFill(OperationType.INSERT)
     void insertSetMeal(Setmeal setmeal);
@@ -66,4 +68,15 @@ public interface SetMealMapper {
      **/
     @Delete("delete from setmeal where id = #{setMealId};")
     void deleteSetMealById(Long setMealId);
+
+    /**
+     * 根据分类的id获取套餐信息
+     *
+     * @param categoryId
+     * @return java.util.List<com.sky.vo.SetmealVO>
+     * @author TZzzQAQ
+     * @create 2023/12/21
+     **/
+    @Select("select * from setmeal where category_id = ${categoryId};")
+    List<SetmealVO> getSetMealByCategoryId(Long categoryId);
 }
