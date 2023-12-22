@@ -79,4 +79,7 @@ public interface SetMealMapper {
      **/
     @Select("select * from setmeal where category_id = ${categoryId};")
     List<SetmealVO> getSetMealByCategoryId(Long categoryId);
+
+    @Select("select * from setmeal where id = #{setmealID};")
+    Setmeal getSetMealEntityById(Long setmealId);
 }
