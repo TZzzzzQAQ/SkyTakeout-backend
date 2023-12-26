@@ -61,7 +61,7 @@ public interface AddressBookMapper {
      * @author TZzzQAQ
      * @create 2023/12/24
      **/
-    @Select("select * from address_book where user_id = #{userID} and is_default = #{isDefault};")
+    @Select("select * from address_book where user_id = #{userId} and is_default = #{isDefault};")
     AddressBook getDefaultAddress(AddressBook addressBook);
 
     /**
