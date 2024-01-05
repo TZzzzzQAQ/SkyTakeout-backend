@@ -26,4 +26,7 @@ public interface UserMapper {
      * @create 2023/12/18
      **/
     void insert(User user);
+
+    @Select("select * from user where id = #{userId};")
+    User getUserById(Long userId);
 }

@@ -43,4 +43,29 @@
         </set>
         where id = #{id}
     </update>
+    <select id="getAllHistoryOrders" resultType="com.sky.entity.Orders">
+        select *
+        from orders
+        <where>
+            <if test="number !=null and number !=''">
+                and number like concat('%',#{number},'%')
+            </if>
+            <if test="userId !=null and userId !=''">
+                and user_id = #{userId}
+            </if>
+            <if test="phone !=null and phone !=''">
+                and phone = #{phone}
+            </if>
+            <if test="status !=null and status !=''">
+                status = #{status}
+            </if>
+            <if test="beginTime !=null and beginTime !=''">
+                and begin_time = #{beginTime}
+            </if>
+            <if test="endTime !=null and beginTime !=''">
+                and end_time = #{endTime}
+            </if>
+        </where>
+        order by order_time desc
+    </select>
 </mapper>
