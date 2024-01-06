@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
     @Autowired
     private OrderService orderService;
-
     @PostMapping("/submit")
     @ApiOperation("用户下单")
     public Result<OrderSubmitVO> submitOrder(@RequestBody OrdersSubmitDTO ordersSubmitDTO) {
@@ -66,7 +65,7 @@ public class OrderController {
     @PostMapping("/repetition/{id}")
     @ApiOperation("再来一单")
     public Result<String> orderAgain(@PathVariable Long id) {
-        orderService.orderAgagin(id);
+        orderService.orderAgain(id);
         return Result.success();
     }
 }
