@@ -57,7 +57,7 @@
                 and phone = #{phone}
             </if>
             <if test="status !=null and status !=''">
-                status = #{status}
+                and status = #{status}
             </if>
             <if test="beginTime != null">
                 and order_time &gt;= #{beginTime}
