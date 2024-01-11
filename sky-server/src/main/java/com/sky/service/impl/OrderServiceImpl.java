@@ -57,18 +57,31 @@ public class OrderServiceImpl implements OrderService {
     @Value("${sky.baidu.ak}")
     private String ak;
 
+    /**
+     * 提交订单
+     *
+     * @param ordersSubmitDTO
+     * @return com.sky.vo.OrderSubmitVO
+     * @author TZzzQAQ
+     * @create 2024/1/11
+     **/
+
     @Override
     @Transactional
     public OrderSubmitVO submitOrder(OrdersSubmitDTO ordersSubmitDTO) {
         //异常情况收货地址为空，购物车为空
         AddressBook addressBook = addressBookMapper.getAddressById(ordersSubmitDTO.getAddressBookId());
         if (addressBook == null) {
+            //如果为空直接抛出异常，地址没有找到
             throw new OrderBusinessException(MessageConstant.ADDRESS_BOOK_IS_NULL);
         }
         if (shoppingCartMapper.getShoppingCart(BaseContext.getCurrentId()).isEmpty()) {
+            //购物车为空
             throw new OrderBusinessException(MessageConstant.SHOPPING_CART_IS_NULL);
         }
+        //查询配送的距离
         checkOutOfRange(addressBook.getCityName() + addressBook.getDistrictName() + addressBook.getDetail());
+        //创建订单
         Orders orders = new Orders();
         BeanUtils.copyProperties(ordersSubmitDTO, orders);
         orders.setPhone(addressBook.getPhone());
@@ -80,6 +93,7 @@ public class OrderServiceImpl implements OrderService {
         orders.setPayStatus(Orders.UN_PAID);
         orders.setOrderTime(LocalDateTime.now());
 
+        //将该订单插入
         orderMapper.insertOrder(orders);
 
         List<ShoppingCart> shoppingCartList = shoppingCartMapper.getShoppingCart(BaseContext.getCurrentId());
@@ -137,6 +151,7 @@ public class OrderServiceImpl implements OrderService {
                 .checkoutTime(LocalDateTime.now())
                 .build();
 
+        // 更新orders数据
         orderMapper.update(orders);
         Map map = new HashMap();
         map.put("type", 1);
@@ -146,8 +161,20 @@ public class OrderServiceImpl implements OrderService {
         webSocketServer.sendToAllClient(string);
     }
 
+    /**
+     * 获取所有的历史订单
+     *
+     * @param page
+     * @param pageSize
+     * @param status
+     * @return com.sky.result.PageResult
+     * @author TZzzQAQ
+     * @create 2024/1/11
+     **/
+
     @Override
     public PageResult getAllHistoryOrders(Integer page, Integer pageSize, Integer status) {
+        // 使用PageHelper查询分页
         PageHelper.startPage(page, pageSize);
         OrdersPageQueryDTO ordersPageQueryDTO = new OrdersPageQueryDTO();
         ordersPageQueryDTO.setPage(page);
@@ -161,7 +188,7 @@ public class OrderServiceImpl implements OrderService {
             for (Orders orders :
                     ordersPage) {
                 Long orderId = orders.getId();
-
+                // 获取订单的详情
                 List<OrderDetail> orderDetailList = orderDetailMapper.getOrdersDetailById(orderId);
 
                 OrderVO orderVO = new OrderVO();
@@ -174,6 +201,15 @@ public class OrderServiceImpl implements OrderService {
         return new PageResult(ordersPage.getTotal(), orderVOList);
     }
 
+    /**
+     * 通过订单id查询订单的详情
+     *
+     * @param id
+     * @return com.sky.vo.OrderVO
+     * @author TZzzQAQ
+     * @create 2024/1/11
+     **/
+
     @Override
     public OrderVO getOrderDetailById(Long id) {
         Orders orders = orderMapper.getOrderById(id);
@@ -183,6 +219,15 @@ public class OrderServiceImpl implements OrderService {
         orderVO.setOrderDetailList(orderDetailMapper.getOrdersDetailById(id));
         return orderVO;
     }
+
+    /**
+     * 取消订单
+     *
+     * @param id
+     * @return void
+     * @author TZzzQAQ
+     * @create 2024/1/11
+     **/
 
     @Override
     public void cancelOrder(Long id) {
@@ -212,6 +257,15 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.update(orders);
     }
 
+    /**
+     * 再来一单
+     *
+     * @param id
+     * @return void
+     * @author TZzzQAQ
+     * @create 2024/1/11
+     **/
+
     @Override
     public void orderAgain(Long id) {
         List<OrderDetail> ordersDetailById = orderDetailMapper.getOrdersDetailById(id);
@@ -225,6 +279,15 @@ public class OrderServiceImpl implements OrderService {
         shoppingCartMapper.insertBatch(shoppingCartList);
     }
 
+    /**
+     * 条件查询
+     *
+     * @param ordersPageQueryDTO
+     * @return com.sky.result.PageResult
+     * @author TZzzQAQ
+     * @create 2024/1/11
+     **/
+
     @Override
     public PageResult conditionallySearch(OrdersPageQueryDTO ordersPageQueryDTO) {
         PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
@@ -233,6 +296,14 @@ public class OrderServiceImpl implements OrderService {
 
         return new PageResult(page.getTotal(), orderVOList);
     }
+
+    /**
+     * 获取统计的订单
+     *
+     * @return com.sky.vo.OrderStatisticsVO
+     * @author TZzzQAQ
+     * @create 2024/1/11
+     **/
 
     @Override
     public OrderStatisticsVO statisticsVOResult() {
@@ -247,6 +318,15 @@ public class OrderServiceImpl implements OrderService {
         return orderStatisticsVO;
     }
 
+    /**
+     * 确认订单
+     *
+     * @param ordersConfirmDTO
+     * @return void
+     * @author TZzzQAQ
+     * @create 2024/1/11
+     **/
+
     @Override
     public void confirmOrder(OrdersConfirmDTO ordersConfirmDTO) {
         Orders orders = Orders.builder()
@@ -255,6 +335,15 @@ public class OrderServiceImpl implements OrderService {
                 .build();
         orderMapper.update(orders);
     }
+
+    /**
+     * 拒绝订单
+     *
+     * @param ordersRejectionDTO
+     * @return void
+     * @author TZzzQAQ
+     * @create 2024/1/11
+     **/
 
     @Override
     public void rejectOrder(OrdersRejectionDTO ordersRejectionDTO) throws Exception {
@@ -282,6 +371,15 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.update(order);
     }
 
+    /**
+     * 管理端取消订单
+     *
+     * @param ordersCancelDTO
+     * @return void
+     * @author TZzzQAQ
+     * @create 2024/1/11
+     **/
+
     @Override
     public void cancelOrderByRestaurant(OrdersCancelDTO ordersCancelDTO) {
         Orders orderById = orderMapper.getOrderById(ordersCancelDTO.getId());
@@ -305,6 +403,15 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.update(orders);
     }
 
+    /**
+     * 派送订单
+     *
+     * @param id
+     * @return void
+     * @author TZzzQAQ
+     * @create 2024/1/11
+     **/
+
     @Override
     public void deliveryOrder(Long id) {
         Orders orders = orderMapper.getOrderById(id);
@@ -320,6 +427,15 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.update(ordersTemp);
     }
 
+    /**
+     * 完成订单
+     *
+     * @param id
+     * @return void
+     * @author TZzzQAQ
+     * @create 2024/1/11
+     **/
+
     @Override
     public void accomplishOrder(Long id) {
         Orders orders = orderMapper.getOrderById(id);
@@ -334,6 +450,15 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.update(ordersTemp);
     }
 
+    /**
+     * 催单
+     *
+     * @param id
+     * @return void
+     * @author TZzzQAQ
+     * @create 2024/1/11
+     **/
+
     @Override
     public void reminderOrders(Long id) {
         Orders orders = orderMapper.getOrderById(id);
@@ -347,6 +472,15 @@ public class OrderServiceImpl implements OrderService {
 
         webSocketServer.sendToAllClient(JSON.toJSONString(map));
     }
+
+    /**
+     * 获取订单的列表
+     *
+     * @param page
+     * @return java.util.List<com.sky.vo.OrderVO>
+     * @author TZzzQAQ
+     * @create 2024/1/11
+     **/
 
     private List<OrderVO> getOrderVOList(Page<Orders> page) {
         List<OrderVO> orderVOList = new ArrayList<>();
@@ -366,6 +500,15 @@ public class OrderServiceImpl implements OrderService {
         }
         return orderVOList;
     }
+
+    /**
+     * 获取订单详情
+     *
+     * @param orders
+     * @return java.lang.String
+     * @author TZzzQAQ
+     * @create 2024/1/11
+     **/
 
     private String getOrderDishesStr(Orders orders) {
         // 查询订单菜品详情信息（订单中的菜品和数量）

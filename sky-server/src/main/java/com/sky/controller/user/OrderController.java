@@ -77,12 +77,30 @@ public class OrderController {
         return Result.success(pageResult);
     }
 
+    /**
+     * 查询订单详情
+     *
+     * @param id
+     * @return com.sky.result.Result<com.sky.vo.OrderVO>
+     * @author TZzzQAQ
+     * @create 2024/1/11
+     **/
+
     @GetMapping("/orderDetail/{id}")
     @ApiOperation("查询订单详情")
     public Result<OrderVO> getOrderDetailById(@PathVariable Long id) {
         log.info("查询订单详情：{}", id);
         return Result.success(orderService.getOrderDetailById(id));
     }
+
+    /**
+     * 取消订单
+     *
+     * @param id
+     * @return com.sky.result.Result<java.lang.String>
+     * @author TZzzQAQ
+     * @create 2024/1/11
+     **/
 
     @PutMapping("/cancel/{id}")
     @ApiOperation("取消订单")
@@ -92,12 +110,30 @@ public class OrderController {
         return Result.success();
     }
 
+    /**
+     * 再来一单接口
+     *
+     * @param id
+     * @return com.sky.result.Result<java.lang.String>
+     * @author TZzzQAQ
+     * @create 2024/1/11
+     **/
+
     @PostMapping("/repetition/{id}")
     @ApiOperation("再来一单")
     public Result<String> orderAgain(@PathVariable Long id) {
         orderService.orderAgain(id);
         return Result.success();
     }
+
+    /**
+     * 用户发起催单请求
+     *
+     * @param id
+     * @return com.sky.result.Result<java.lang.String>
+     * @author TZzzQAQ
+     * @create 2024/1/11
+     **/
 
     @GetMapping("/reminder/{id}")
     @ApiOperation("用户催单")
