@@ -8,4 +8,6 @@ import java.util.Map;
 public interface ReportMapper {
 
     Double getTurnoverByDate(Map<String, Object> start);
+
+    Integer getAllUserStaticsByDate(Map<String, Object> map);
 }
