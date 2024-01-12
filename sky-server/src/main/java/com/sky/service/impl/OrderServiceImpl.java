@@ -439,12 +439,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void accomplishOrder(Long id) {
         Orders orders = orderMapper.getOrderById(id);
-        if (orders == null || orders.getStatus().equals(Orders.DELIVERY_IN_PROGRESS)) {
+        if (orders == null || !orders.getStatus().equals(Orders.DELIVERY_IN_PROGRESS)) {
             throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
         }
         Orders ordersTemp = Orders.builder()
                 .id(id)
-                .status(Orders.DELIVERY_IN_PROGRESS)
+                .status(Orders.COMPLETED)
                 .deliveryTime(LocalDateTime.now())
                 .build();
         orderMapper.update(ordersTemp);
