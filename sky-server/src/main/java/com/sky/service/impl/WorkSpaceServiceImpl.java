@@ -10,12 +10,10 @@ import com.sky.vo.BusinessDataVO;
 import com.sky.vo.DishOverViewVO;
 import com.sky.vo.OrderOverViewVO;
 import com.sky.vo.SetmealOverViewVO;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.GenericDeclaration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -52,9 +50,7 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
 
         Integer completedCount = reportMapper.getOrders(map);
 
-        Double turnover = 0.0;
-        turnover = reportMapper.getTurnoverByDate(map);
-
+        Double turnover = reportMapper.getTurnoverByDate(map);
         Double unitPrice = 0.0;
         Double rate = 0.0;
 
@@ -64,6 +60,9 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
                 if (turnover != 0)
                     unitPrice = turnover / completedCount;
             }
+        }
+        if (turnover == null) {
+            turnover = 0.0;
         }
         return BusinessDataVO.builder()
                 .validOrderCount(completedCount)
@@ -123,11 +122,11 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
     @Override
     public SetmealOverViewVO getSetmealOverview() {
         Map<String, Integer> map = new HashMap<>();
-        map.put("status",StatusConstant.DISABLE);
+        map.put("status", StatusConstant.DISABLE);
 
         Integer discontinued = workSpaceMapper.getSetMealCount(map);
 
-        map.put("status",StatusConstant.ENABLE);
+        map.put("status", StatusConstant.ENABLE);
         Integer sold = workSpaceMapper.getSetMealCount(map);
         return SetmealOverViewVO.builder()
                 .discontinued(discontinued)

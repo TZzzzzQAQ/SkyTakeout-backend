@@ -4,15 +4,20 @@ import com.sky.dto.GoodsSalesDTO;
 import com.sky.entity.Orders;
 import com.sky.mapper.ReportMapper;
 import com.sky.service.ReportService;
-import com.sky.vo.OrderReportVO;
-import com.sky.vo.SalesTop10ReportVO;
-import com.sky.vo.TurnoverReportVO;
-import com.sky.vo.UserReportVO;
+import com.sky.service.WorkSpaceService;
+import com.sky.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -27,6 +32,8 @@ import java.util.stream.Collectors;
 public class ReportServiceImpl implements ReportService {
     @Autowired
     private ReportMapper reportMapper;
+    @Autowired
+    private WorkSpaceService workSpaceService;
 
     @Override
     public TurnoverReportVO getTurnoverByStartAndEnd(LocalDate start, LocalDate end) {
@@ -115,8 +122,8 @@ public class ReportServiceImpl implements ReportService {
         List<String> nameList = salesTop10List.stream().map(GoodsSalesDTO::getName).collect(Collectors.toList());
         List<Integer> numberList = salesTop10List.stream().map(GoodsSalesDTO::getNumber).collect(Collectors.toList());
         return SalesTop10ReportVO.builder()
-                .nameList(StringUtils.join(nameList,","))
-                .numberList(StringUtils.join(numberList,","))
+                .nameList(StringUtils.join(nameList, ","))
+                .numberList(StringUtils.join(numberList, ","))
                 .build();
     }
 
@@ -128,5 +135,53 @@ public class ReportServiceImpl implements ReportService {
             dateList.add(begin);
         }
         return dateList;
+    }
+
+    @Override
+    public void getReport(HttpServletResponse response) {
+        LocalDate end = LocalDate.now().minusDays(1);
+        LocalDate begin = end.minusDays(30);
+
+        LocalDateTime beginTime = LocalDateTime.of(begin, LocalTime.MIN);
+        LocalDateTime endTime = LocalDateTime.of(end, LocalTime.MAX);
+
+        BusinessDataVO businessData = workSpaceService.getBusinessData(beginTime, endTime);
+
+        InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("template/temp.xlsx");
+
+        try {
+            XSSFWorkbook excel = new XSSFWorkbook(resourceAsStream);
+            XSSFSheet sheet = excel.getSheet("Sheet1");
+            sheet.getRow(1).getCell(1).setCellValue("时间：" + begin + "至" + end);
+
+            XSSFRow row = sheet.getRow(3);
+            row.getCell(2).setCellValue(businessData.getTurnover());
+            row.getCell(4).setCellValue(businessData.getOrderCompletionRate());
+            row.getCell(6).setCellValue(businessData.getNewUsers());
+
+            row = sheet.getRow(4);
+            row.getCell(2).setCellValue(businessData.getValidOrderCount());
+            row.getCell(4).setCellValue(businessData.getUnitPrice());
+            for (int i = 0; i < 31; i++) {
+                LocalDate date = begin.plusDays(i);
+                BusinessDataVO businessData1 = workSpaceService.getBusinessData(LocalDateTime.of(date, LocalTime.MIN), LocalDateTime.of(date, LocalTime.MAX));
+
+                row = sheet.getRow(7 + i);
+                row.getCell(1).setCellValue(date.toString());
+                row.getCell(2).setCellValue(businessData1.getTurnover());
+                row.getCell(3).setCellValue(businessData1.getValidOrderCount());
+                row.getCell(4).setCellValue(businessData1.getOrderCompletionRate());
+                row.getCell(5).setCellValue(businessData1.getUnitPrice());
+                row.getCell(6).setCellValue(businessData1.getNewUsers());
+            }
+
+            ServletOutputStream outputStream = response.getOutputStream();
+            excel.write(outputStream);
+            outputStream.close();
+            excel.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

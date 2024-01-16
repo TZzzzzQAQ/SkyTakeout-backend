@@ -57,7 +57,7 @@ public class WorkSpaceController {
 
     @GetMapping("/overviewSetmeals")
     @ApiOperation("查询套餐总览")
-    public Result<SetmealOverViewVO> getSetmealOverView(){
+    public Result<SetmealOverViewVO> getSetmealOverView() {
         log.info("查询套餐总览");
         return Result.success(workSpaceService.getSetmealOverview());
     }

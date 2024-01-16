@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 
 @RestController
@@ -61,5 +62,11 @@ public class ReportController {
     ) {
         log.info("获取销量排行：{}，{}", begin, end);
         return Result.success(reportService.getSalesTop10ByStartAndEnd(begin, end));
+    }
+
+    @GetMapping("/export")
+    @ApiOperation("获取报表下载")
+    public void getReport(HttpServletResponse response) {
+        reportService.getReport(response);
     }
 }
